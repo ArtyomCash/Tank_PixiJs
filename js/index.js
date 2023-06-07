@@ -26,6 +26,9 @@ const runGame = () => {
   const tank = new Tank();
   app.stage.addChild(tank.view);
   app.stage.addChild(marker);
+
+  // window["TANK"] = tank;
+
   // от дисплей object наследуются все объекты котороые будут рисоваться
   // если js файл импортирован как модуль, то все его переменные не будет видимости window
 
