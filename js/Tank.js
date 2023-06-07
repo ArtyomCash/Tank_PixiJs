@@ -1,6 +1,6 @@
 // что бы добавить Tank в Pixi - он должен быть контейнером
 
-import {AnimatedSprite, Container, Texture} from "./pixi.mjs";
+import {AnimatedSprite, Container, Texture, Sprite} from "./pixi.mjs";
 
 export const createAnimatedSprite = (textureNames, position = { x: 0, y: 0 }, anchor = { x: 0.5, y: 0.5 }) => {
   const textures = textureNames.map(name => Texture.from(name));
@@ -11,6 +11,12 @@ export const createAnimatedSprite = (textureNames, position = { x: 0, y: 0 }, an
   return animatedSprite;
 };
 
+export const createSprite = (textureName, position = { x: 0, y: 0 }, anchor = { x: 0.5, y: 0.5 }) => {
+  const sprite = new Sprite(Texture.from(textureName));
+  sprite.position.copyFrom(position);
+  sprite.anchor.copyFrom(anchor);
+  return sprite;
+};
 
 export class Tank {
   constructor() {
@@ -43,7 +49,26 @@ export class Tank {
     this._tracksRight = createAnimatedSprite(['TrackСFrame1', 'TrackСFrame2'], {x: 0, y: 80});
     this._tracksLeft.animationSpeed = 0.25;
     this._tracksRight.animationSpeed = 0.25;
-    this._view.addChild(this._tracksLeft, this._tracksRight)
+    this._view.addChild(this._tracksLeft, this._tracksRight);
+
+    this._hull = new Sprite(Texture.from('HeavyHullB'));
+    this._hull.anchor.set(0.5);
+    this.view.addChild(this._hull);
+
+    /*const gunLeft = new Sprite(Texture.from('HeavyGunB'));
+    gunLeft.points.set(140, -27);
+    gunLeft.anchor.set(0.5);
+
+    const gunRight = new Sprite(Texture.from('HeavyGunB'));
+    gunRight.points.set(160, -27);
+    gunRight.anchor.set(0.5);*/
+
+    this._view.addChild(createSprite('HeavyGunB', { x: 140, y: -27 }));
+    this._view.addChild(createSprite('HeavyGunB', { x: 160, y: 29 }));
+
+    this._view.addChild(createSprite('GunConnectorD', { x: 80, y: 0 }));
+
+    this._view.addChild(createSprite('HeavyTowerB'));
 
   }
   get view() {
