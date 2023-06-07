@@ -45,6 +45,9 @@ export class Tank {
     // добавляем в контейнер трек
     this._view.addChild(this._tracksRight)*/
 
+    this._bodyContainer = new Container();
+    this._view.addChild(this._bodyContainer);
+
     this._tracksLeft = createAnimatedSprite(['TrackСFrame1', 'TrackСFrame2'], {x: 0, y: -80});
     this._tracksRight = createAnimatedSprite(['TrackСFrame1', 'TrackСFrame2'], {x: 0, y: 80});
     this._tracksLeft.animationSpeed = 0.25;
@@ -63,15 +66,44 @@ export class Tank {
     gunRight.points.set(160, -27);
     gunRight.anchor.set(0.5);*/
 
-    this._view.addChild(createSprite('HeavyGunB', { x: 140, y: -27 }));
-    this._view.addChild(createSprite('HeavyGunB', { x: 160, y: 29 }));
+    // что бы вращение было не относительно элемента а относительно центра башни, нужно
+    // сгрупировать все элементы в контейнер, который будет групироваться относительно центра корпуса
 
-    this._view.addChild(createSprite('GunConnectorD', { x: 80, y: 0 }));
+    this._towerContainer = new Container();
+    this._view.addChild(this._towerContainer);
 
-    this._view.addChild(createSprite('HeavyTowerB'));
+    this._towerContainer.addChild(createSprite('HeavyGunB', { x: 140, y: -27 }));
+    this._towerContainer.addChild(createSprite('HeavyGunB', { x: 160, y: 29 }));
+
+    this._towerContainer.addChild(createSprite('GunConnectorD', { x: 80, y: 0 }));
+    this._towerContainer.addChild(createSprite('HeavyTowerB'));
+
+    this._bodyContainer.addChild(createAnimatedSprite(['TrackСFrame1', 'TrackСFrame2'], {x: 0, y: -80}));
+    this._bodyContainer.addChild(createAnimatedSprite(['TrackСFrame1', 'TrackСFrame2'], {x: 0, y: 80}));
+
+
 
   }
   get view() {
     return this._view;
   }
+
+  rotateTowerBy(angle) {
+    this._towerContainer.rotation += angle;
+  }
+
+  rotateBodyBy(angle) {
+    this._bodyContainer.rotation += angle;
+  }
+
+  startTracks() {
+    this._tracksLeft.play();
+    this._tracksRight.play();
+  }
+
+  stopTracks() {
+    this._tracksLeft.stop();
+    this._tracksRight.stop();
+  }
+
 }

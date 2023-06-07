@@ -1,5 +1,5 @@
 // import * as PIXI from './pixi.mjs';
-import { Application, Graphics } from './pixi.mjs';
+import { Application, Graphics, Rectangle } from './pixi.mjs';
 import { assetsMap } from './assetsMap.js';
 import { Tank } from './Tank.js';
 
@@ -27,7 +27,7 @@ const runGame = () => {
   app.stage.addChild(tank.view);
   app.stage.addChild(marker);
 
-  // window["TANK"] = tank;
+
 
   // от дисплей object наследуются все объекты котороые будут рисоваться
   // если js файл импортирован как модуль, то все его переменные не будет видимости window
@@ -38,8 +38,30 @@ const runGame = () => {
   // и вращение было относительно ценрта  => app.stage.position.set(800/2, 800/2);
   // 800; 800 - ширина и высота конваса
 
-  app.stage.position.set(800/2, 800/2);
+  app.stage.position.set(800 / 2, 800 / 2);
 
+  window["TANK"] = tank;
+
+  // вешаем обработчик событий на stage - слушать когда происходят клики
+  // в библиотеке pixi найти PIXI.AnimatedSprite => Events
+
+  const onPointerDown = ({ data }) => {
+    console.log('event >>>', data);
+
+    // getLocalPosition - возращает позиции относительно объекта
+
+    const position = data.getLocalPosition(app.stage);
+    app.stage.addChild(new Graphics().beginFill(0xff0000, 1).drawCircle(position.x, position.y, 5))
+
+  };
+  app.stage.on('pointerdown', onPointerDown, undefined);
+  // также нужно показать что объект должен быть интерактивным это связано с аптимизацией в pixi
+  app.stage.interactive = true;
+  // interactiveChildren - ставим false для того что бы не проверять каждый элемент танка отдельно
+  // так как нам нужна область вогруг танка. Таким обрпзом экономяться ресурсы.
+  app.stage.interactiveChildren = false;
+
+  app.stage.hitArea = new Rectangle(-400, -400, 800, 800);
 };
 
 assetsMap.sprites.forEach((value) => app.loader.add(value.name, value.url));
