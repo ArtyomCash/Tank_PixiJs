@@ -52,7 +52,8 @@ export class Tank {
     this._tracksRight = createAnimatedSprite(['TrackСFrame1', 'TrackСFrame2'], {x: 0, y: 80});
     this._tracksLeft.animationSpeed = 0.25;
     this._tracksRight.animationSpeed = 0.25;
-    this._view.addChild(this._tracksLeft, this._tracksRight);
+    // this._view.addChild(this._tracksLeft, this._tracksRight);
+    this._bodyContainer.addChild(this._tracksLeft, this._tracksRight);
 
     /*this._hull = new Sprite(Texture.from('HeavyHullB'));
     this._hull.anchor.set(0.5);
@@ -78,9 +79,16 @@ export class Tank {
     this._towerContainer.addChild(createSprite('GunConnectorD', { x: 80, y: 0 }));
     this._towerContainer.addChild(createSprite('HeavyTowerB'));
 
-    this._bodyContainer.addChild(createAnimatedSprite(['TrackСFrame1', 'TrackСFrame2'], {x: 0, y: -80}));
-    this._bodyContainer.addChild(createAnimatedSprite(['TrackСFrame1', 'TrackСFrame2'], {x: 0, y: 80}));
-    this._bodyContainer.addChild(createAnimatedSprite(['HeavyHullB']))
+    // this._bodyContainer.addChild(createAnimatedSprite(['TrackСFrame1', 'TrackСFrame2'], {x: 0, y: -80}, 0.25));
+    // this._bodyContainer.addChild(createAnimatedSprite(['TrackСFrame1', 'TrackСFrame2'], {x: 0, y: 80}, 0.25));
+    // ------------------
+    // const hull = createSprite('HeavyHullB');
+
+    // Добавляем hull в bodyContainer
+    // this._bodyContainer.addChild(hull);
+    // ----------------
+
+    this._bodyContainer.addChild(createAnimatedSprite(['HeavyHullB']));
 
   }
   get view() {

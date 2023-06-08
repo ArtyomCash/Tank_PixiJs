@@ -58,6 +58,7 @@ const runGame = () => {
     app.stage.addChild(new Graphics().beginFill(0xff0000, 1).drawCircle(position.x, position.y, 5))
 
   };*/
+  // onPointerDown(marker);
   const tweenManager = new TweenManager(app.ticker);
   // при помощи этой функции буду двигать так используя Tween анимацию
   const moveTank = ({ data }) => {
