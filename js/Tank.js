@@ -48,15 +48,15 @@ export class Tank {
     this._bodyContainer = new Container();
     this._view.addChild(this._bodyContainer);
 
-    this._tracksLeft = createAnimatedSprite(['TrackСFrame1', 'TrackСFrame2'], {x: 0, y: -80});
+    /*this._tracksLeft = createAnimatedSprite(['TrackСFrame1', 'TrackСFrame2'], {x: 0, y: -80});
     this._tracksRight = createAnimatedSprite(['TrackСFrame1', 'TrackСFrame2'], {x: 0, y: 80});
     this._tracksLeft.animationSpeed = 0.25;
     this._tracksRight.animationSpeed = 0.25;
-    this._view.addChild(this._tracksLeft, this._tracksRight);
+    this._view.addChild(this._tracksLeft, this._tracksRight);*/
 
-    this._hull = new Sprite(Texture.from('HeavyHullB'));
+    /*this._hull = new Sprite(Texture.from('HeavyHullB'));
     this._hull.anchor.set(0.5);
-    this.view.addChild(this._hull);
+    this.view.addChild(this._hull);*/
 
     /*const gunLeft = new Sprite(Texture.from('HeavyGunB'));
     gunLeft.points.set(140, -27);
@@ -80,21 +80,56 @@ export class Tank {
 
     this._bodyContainer.addChild(createAnimatedSprite(['TrackСFrame1', 'TrackСFrame2'], {x: 0, y: -80}));
     this._bodyContainer.addChild(createAnimatedSprite(['TrackСFrame1', 'TrackСFrame2'], {x: 0, y: 80}));
-
-
+    this._bodyContainer.addChild(createAnimatedSprite(['HeavyHullB']))
 
   }
   get view() {
     return this._view;
   }
 
-  rotateTowerBy(angle) {
+  // будет присваивать значение которое передадим
+  set towerDirection(value) {
+    this._towerContainer.rotation = value;
+  }
+
+  // взять поворот
+  get towerDirection() {
+    return this._towerContainer.rotation;
+  }
+
+  // будет присваивать значение которое передадим
+  set bodyDirection(value) {
+    this._bodyContainer.rotation = value;
+  }
+
+  // взять поворот
+  get bodyDirection() {
+    return this._bodyContainer.rotation;
+  }
+
+  get x() {
+    return this._view.position.x
+  }
+
+  set x(value) {
+    return this._view.position.x = value;
+  }
+
+  get y() {
+    return this._view.position.y
+  }
+
+  set y(value) {
+    return this._view.position.y = value;
+  }
+
+  /*rotateTowerBy(angle) {
     this._towerContainer.rotation += angle;
   }
 
   rotateBodyBy(angle) {
     this._bodyContainer.rotation += angle;
-  }
+  }*/
 
   startTracks() {
     this._tracksLeft.play();

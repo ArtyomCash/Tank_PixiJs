@@ -58,7 +58,53 @@ const runGame = () => {
     app.stage.addChild(new Graphics().beginFill(0xff0000, 1).drawCircle(position.x, position.y, 5))
 
   };*/
-  app.stage.on('pointerdown', onPointerDown, undefined);
+
+  // при помощи этой функции буду двигать так используя Tween анимацию
+  const moveTank = ({ data }) => {
+    // getLocalPosition - узнаём локальное появление мыши по отношению к нашей позиции
+    const distanceToCenter = data.getLocalPosition(app.stage);
+    const distanceToTank = data.getLocalPosition(tank.view);
+
+    // atan2 - принимает x и y - возращает угол в радианих
+    const angle = Math.atan2(distanceToTank.y, distanceToTank.x);
+
+    // console.log('distanceToCenter >', distanceToCenter);
+    // console.log('distanceToTank >', distanceToTank);
+    // console.log('angle >', angle);
+    // нужно найти расстояние до самого танка
+    // console.log('event >', event);
+
+    // при помощи hooks - синхнонизируем движение башни и тела танка. Как только они становятся в одном направлении
+    // начинается движение гусениц
+
+    let callAmount = 2;
+
+    const move = () => {
+      callAmount -= 1;
+      // callAmount - считаю сколько раз вызвана функция, если вызвана больше 2х раз, то тогда танк передвигается
+      if (callAmount <= 0) {
+        tweenManager.createTween(tank, 3000, { x: distanceToCenter.x, y: distanceToCenter.y });
+      }
+    };
+
+    tweenManager.createTween(tank, 1000, { towerDirection: angle }, {
+      onFinish: () => move()
+    });
+    tweenManager.createTween(tank, 2000, { bodyDirection: angle }, {
+      onFinish: () => move()
+    });
+    /*tweenManager.createTween(tank, 2000, { bodyDirection: angle }, {
+      onStart: () => {
+        tank.startTracks()
+      },
+      onFinish: () => {
+        tank.stopTracks();
+        move()
+      }
+    });*/
+  };
+
+  app.stage.on('pointerdown', moveTank, undefined);
   // также нужно показать что объект должен быть интерактивным это связано с аптимизацией в pixi
   app.stage.interactive = true;
   // interactiveChildren - ставим false для того что бы не проверять каждый элемент танка отдельно
@@ -91,8 +137,6 @@ const runGame = () => {
 
   })*/
 
-  const tweenManager = new TweenManager(app.ticker);
-
   /*window['testTweens'] = {
     moveTo(duration, position) {
       tweenManager.createTween(rectangle, duration, position);
@@ -105,6 +149,8 @@ const runGame = () => {
       this.rotateTo(rotationDuration, rotationData);
     }
   }*/
+
+  const tweenManager = new TweenManager(app.ticker);
 };
 
 assetsMap.sprites.forEach((value) => app.loader.add(value.name, value.url));
