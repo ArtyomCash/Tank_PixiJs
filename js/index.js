@@ -26,7 +26,7 @@ const runGame = () => {
 
   const tank = new Tank();
   //visible виден элемент или нет
-  tank.view.visible = false;
+  // tank.view.visible = false;
   app.stage.addChild(tank.view);
   app.stage.addChild(marker);
 
@@ -48,7 +48,8 @@ const runGame = () => {
   // вешаем обработчик событий на stage - слушать когда происходят клики
   // в библиотеке pixi найти PIXI.AnimatedSprite => Events
 
-  const onPointerDown = ({ data }) => {
+  // появление курсора при клике на экран
+  /*const onPointerDown = ({ data }) => {
     console.log('event >>>', data);
 
     // getLocalPosition - возращает позиции относительно объекта
@@ -56,18 +57,18 @@ const runGame = () => {
     const position = data.getLocalPosition(app.stage);
     app.stage.addChild(new Graphics().beginFill(0xff0000, 1).drawCircle(position.x, position.y, 5))
 
-  };
+  };*/
   app.stage.on('pointerdown', onPointerDown, undefined);
   // также нужно показать что объект должен быть интерактивным это связано с аптимизацией в pixi
   app.stage.interactive = true;
   // interactiveChildren - ставим false для того что бы не проверять каждый элемент танка отдельно
-  // так как нам нужна область вогруг танка. Таким обрпзом экономяться ресурсы.
+  // так как нам нужна область вогруг танка. Таким образом экономяться ресурсы.
   app.stage.interactiveChildren = false;
 
   app.stage.hitArea = new Rectangle(-400, -400, 800, 800);
 
-  const rectangle = new Graphics().beginFill(0x000000).drawRect(0, 0, 100, 100).endFill();
-  app.stage.addChild(rectangle);
+  /*const rectangle = new Graphics().beginFill(0x000000).drawRect(0, 0, 100, 100).endFill();
+  app.stage.addChild(rectangle);*/
 
   /*let value = 0;
   const stepValue = 0.02;
@@ -92,7 +93,7 @@ const runGame = () => {
 
   const tweenManager = new TweenManager(app.ticker);
 
-  window['testTweens'] = {
+  /*window['testTweens'] = {
     moveTo(duration, position) {
       tweenManager.createTween(rectangle, duration, position);
     },
@@ -103,7 +104,7 @@ const runGame = () => {
       this.moveTo(moveDuration, position);
       this.rotateTo(rotationDuration, rotationData);
     }
-  }
+  }*/
 };
 
 assetsMap.sprites.forEach((value) => app.loader.add(value.name, value.url));
