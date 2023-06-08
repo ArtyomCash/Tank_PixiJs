@@ -58,7 +58,7 @@ const runGame = () => {
     app.stage.addChild(new Graphics().beginFill(0xff0000, 1).drawCircle(position.x, position.y, 5))
 
   };*/
-
+  const tweenManager = new TweenManager(app.ticker);
   // при помощи этой функции буду двигать так используя Tween анимацию
   const moveTank = ({ data }) => {
     // getLocalPosition - узнаём локальное появление мыши по отношению к нашей позиции
@@ -83,17 +83,20 @@ const runGame = () => {
       callAmount -= 1;
       // callAmount - считаю сколько раз вызвана функция, если вызвана больше 2х раз, то тогда танк передвигается
       if (callAmount <= 0) {
-        tweenManager.createTween(tank, 3000, { x: distanceToCenter.x, y: distanceToCenter.y });
+        tweenManager.createTween(tank, 3000, { x: distanceToCenter.x, y: distanceToCenter.y }, {
+          onStart: () => tank.startTracks(),
+          onFinish: () => tank.stopTracks()
+        });
       }
     };
 
     tweenManager.createTween(tank, 1000, { towerDirection: angle }, {
       onFinish: () => move()
     });
-    tweenManager.createTween(tank, 2000, { bodyDirection: angle }, {
-      onFinish: () => move()
-    });
     /*tweenManager.createTween(tank, 2000, { bodyDirection: angle }, {
+      onFinish: () => move()
+    });*/
+    tweenManager.createTween(tank, 2000, { bodyDirection: angle }, {
       onStart: () => {
         tank.startTracks()
       },
@@ -101,7 +104,7 @@ const runGame = () => {
         tank.stopTracks();
         move()
       }
-    });*/
+    });
   };
 
   app.stage.on('pointerdown', moveTank, undefined);
@@ -150,7 +153,7 @@ const runGame = () => {
     }
   }*/
 
-  const tweenManager = new TweenManager(app.ticker);
+
 };
 
 assetsMap.sprites.forEach((value) => app.loader.add(value.name, value.url));
