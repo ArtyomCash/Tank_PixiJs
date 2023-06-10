@@ -91,6 +91,7 @@ export class Tank {
     this._bodyContainer.addChild(createAnimatedSprite(['HeavyHullB']));
 
   }
+  // ._view - создаём приватное значение для контейнера
   get view() {
     return this._view;
   }

@@ -5,8 +5,9 @@ import { Tank } from './Tank.js';
 import { TweenManager, Tween } from './Tween.js';
 
 // Создаем приложение Pixi.js
+// для просмотра команд - поствить курсор на const app = new Application({ тут - нажать ctrl + пробел
 const app = new Application({
-  width: 800,
+  width: 1600,
   height: 800,
   backgroundColor: 0xc2c2c2,
   view: document.getElementById("canvas")
@@ -28,6 +29,8 @@ const runGame = () => {
   //visible виден элемент или нет
   // tank.view.visible = false;
   app.stage.addChild(tank.view);
+
+  // передаём маркер в addChild для отрисовки
   app.stage.addChild(marker);
 
 
@@ -41,7 +44,7 @@ const runGame = () => {
   // и вращение было относительно ценрта  => app.stage.position.set(800/2, 800/2);
   // 800; 800 - ширина и высота конваса
 
-  app.stage.position.set(800 / 2, 800 / 2);
+  app.stage.position.set(1600 / 2, 800 / 2);
 
   window["TANK"] = tank;
 
@@ -49,7 +52,7 @@ const runGame = () => {
   // в библиотеке pixi найти PIXI.AnimatedSprite => Events
 
   // появление курсора при клике на экран
-  /*const onPointerDown = ({ data }) => {
+  const onPointerDown = ({ data }) => {
     console.log('event >>>', data);
 
     // getLocalPosition - возращает позиции относительно объекта
@@ -57,8 +60,11 @@ const runGame = () => {
     const position = data.getLocalPosition(app.stage);
     app.stage.addChild(new Graphics().beginFill(0xff0000, 1).drawCircle(position.x, position.y, 5))
 
-  };*/
-  // onPointerDown(marker);
+  };
+
+  // обрабатывает событие при нажатии на кнопку - появляется красная точка
+  // app.stage.on('pointerdown', onPointerDown, undefined);
+
   const tweenManager = new TweenManager(app.ticker);
   // при помощи этой функции буду двигать так используя Tween анимацию
   const moveTank = ({ data }) => {
@@ -115,7 +121,7 @@ const runGame = () => {
   // так как нам нужна область вогруг танка. Таким образом экономяться ресурсы.
   app.stage.interactiveChildren = false;
 
-  app.stage.hitArea = new Rectangle(-400, -400, 800, 800);
+  app.stage.hitArea = new Rectangle(-800, -400, 1600, 800);
 
   /*const rectangle = new Graphics().beginFill(0x000000).drawRect(0, 0, 100, 100).endFill();
   app.stage.addChild(rectangle);*/
