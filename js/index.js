@@ -14,7 +14,9 @@ const app = new Application({
 });
 
 // const loader = PIXI.Loader.shared;
+let tankState = 'move';
 
+// ----------------------  МОЙ КОД
 const runGame = () => {
   // debugger
   const marker = new Graphics();
@@ -68,50 +70,67 @@ const runGame = () => {
   const tweenManager = new TweenManager(app.ticker);
   // при помощи этой функции буду двигать так используя Tween анимацию
   const moveTank = ({ data }) => {
-    // getLocalPosition - узнаём локальное появление мыши по отношению к нашей позиции
-    const distanceToCenter = data.getLocalPosition(app.stage);
-    const distanceToTank = data.getLocalPosition(tank.view);
+    const startTime = app.ticker.lastTime;
+    if (tankState === 'move') {
+      // console.log('data', data.originalEvent.timeStamp);
+      // getLocalPosition - узнаём локальное появление мыши по отношению к нашей позиции
+      const distanceToCenter = data.getLocalPosition(app.stage);
+      const distanceToTank = data.getLocalPosition(tank.view);
 
-    // atan2 - принимает x и y - возращает угол в радианих
-    const angle = Math.atan2(distanceToTank.y, distanceToTank.x);
+      // atan2 - принимает x и y - возращает угол в радианих
+      const angle = Math.atan2(distanceToTank.y, distanceToTank.x);
+      tankState = 'stop';
+      // console.log('distanceToCenter >', distanceToCenter);
+      // console.log('distanceToTank >', distanceToTank);
+      // console.log('angle >', angle);
+      // нужно найти расстояние до самого танка
+      // console.log('event >', event);
 
-    // console.log('distanceToCenter >', distanceToCenter);
-    // console.log('distanceToTank >', distanceToTank);
-    // console.log('angle >', angle);
-    // нужно найти расстояние до самого танка
-    // console.log('event >', event);
+      // при помощи hooks - синхнонизируем движение башни и тела танка. Как только они становятся в одном направлении
+      // начинается движение гусениц
 
-    // при помощи hooks - синхнонизируем движение башни и тела танка. Как только они становятся в одном направлении
-    // начинается движение гусениц
+      let callAmount = 2;
 
-    let callAmount = 2;
+      const move = () => {
+        console.log('move');
+        const elapsedTime = app.ticker.lastTime - startTime; // Вычислить прошедшее время
+        console.log('Пройденное время:', elapsedTime);
+        callAmount -= 1;
+        // callAmount - считаю сколько раз вызвана функция, если вызвана больше 2х раз, то тогда танк передвигается
+        if (callAmount <= 0) {
+          tweenManager.createTween(tank, 3000, { x: distanceToCenter.x, y: distanceToCenter.y }, {
+            onStart: () => tank.startTracks(),
+            onFinish: () => tank.stopTracks()
+          });
+        }
+      };
 
-    const move = () => {
-      callAmount -= 1;
-      // callAmount - считаю сколько раз вызвана функция, если вызвана больше 2х раз, то тогда танк передвигается
-      if (callAmount <= 0) {
-        tweenManager.createTween(tank, 3000, { x: distanceToCenter.x, y: distanceToCenter.y }, {
-          onStart: () => tank.startTracks(),
-          onFinish: () => tank.stopTracks()
-        });
-      }
-    };
-
-    tweenManager.createTween(tank, 1000, { towerDirection: angle }, {
-      onFinish: () => move()
-    });
-    /*tweenManager.createTween(tank, 2000, { bodyDirection: angle }, {
-      onFinish: () => move()
-    });*/
-    tweenManager.createTween(tank, 2000, { bodyDirection: angle }, {
-      onStart: () => {
-        tank.startTracks()
-      },
-      onFinish: () => {
-        tank.stopTracks();
-        move()
-      }
-    });
+      tweenManager.createTween(tank, 1000, { towerDirection: angle }, {
+        onFinish: () => move()
+      });
+      /*tweenManager.createTween(tank, 2000, { bodyDirection: angle }, {
+        onFinish: () => move()
+      });*/
+      tweenManager.createTween(tank, 2000, { bodyDirection: angle }, {
+        onStart: () => {
+          tank.startTracks()
+        },
+        onFinish: () => {
+          tank.stopTracks();
+          move()
+        }
+      });
+    } else if (tankState === 'stop') {
+      console.log('tank', tank);
+      // console.log('XXXXX', tank._view.position._x);
+      // console.log('YYYYY', tank._view.position._y);
+      tank.stopTracks();
+      tweenManager.createTween(tank, 3000, { x: tank._view.position._x, y: tank._view.position._y }, {
+        // onStart: () => tank.startTracks(),
+        // onFinish: () => tank.stopTracks(),
+      });
+      tankState = 'move'
+    }
   };
 
   app.stage.on('pointerdown', moveTank, undefined);
@@ -162,9 +181,113 @@ const runGame = () => {
 
 
 };
+// ----------------------  МОЙ КОД
+
+// ------------------ GPT
+/*let tankState = 'idle';
+
+const runGame = () => {
+  const marker = new Graphics();
+
+  marker.beginFill(0xff0000, 1);
+  marker.drawCircle(0, 0, 5);
+  marker.endFill();
+
+  const tank = new Tank();
+  console.log('tank >>>', tank._view.position);
+
+  app.stage.addChild(tank.view);
+  app.stage.addChild(marker);
+  app.stage.position.set(1600 / 2, 800 / 2);
+
+  const tweenManager = new TweenManager(app.ticker);
+
+  const moveTank = ({ data }) => {
+
+    console.log('data', data.global);
+
+    if (tankState === 'idle') {
+      const distanceToCenter = data.getLocalPosition(app.stage);
+      const distanceToTank = data.getLocalPosition(tank.view);
+      const angle = Math.atan2(distanceToTank.y, distanceToTank.x);
+
+      tankState = 'moving';
+      tweenManager.createTween(tank, 1000, { towerDirection: angle }, {
+        onFinish: () => {
+          tank.startTracks();
+          tweenManager.createTween(tank, 2000, { bodyDirection: angle }, {
+            onStart: () => tank.startTracks(),
+            onFinish: () => {
+              tank.stopTracks();
+              const move = () => {
+                tweenManager.createTween(tank, 3000, { x: distanceToCenter.x, y: distanceToCenter.y }, {
+                  onStart: () => tank.startTracks(),
+                  onFinish: () => {
+                    tank.stopTracks();
+                    tankState = 'idle';
+                  }
+                });
+              };
+              move();
+            }
+          });
+        }
+      });
+    } else if (tankState === 'moving') {
+      // console.log('data moving', data.global);
+      // const distanceToTank = data.getLocalPosition(tank.view);
+      // const angle = Math.atan2(distanceToTank.y, distanceToTank.x);
+
+      const currentX = tank.view.position.x;
+      const currentY = tank.view.position.y;
+
+      const intervalId = setInterval(() => {
+        console.log('XXXXX', tank._view.position._x);
+        console.log('YYYYY', tank._view.position._y);
+
+        // Проверяем условие остановки цикла
+        if (tankState === 'moving') {
+          clearInterval(intervalId);
+
+          const distanceToCenter = data.getLocalPosition(app.stage);
+          const distanceToTank = data.getLocalPosition(tank.view);
+          const angle = Math.atan2(distanceToTank.y, distanceToTank.x);
+
+          tank.stopTracks();
+          tankState = 'idle';
+
+          const move = () => {
+            tweenManager.createTween(tank, 3000, { x: currentX, y: currentY }, {
+              onStart: () => tank.startTracks(),
+              onFinish: () => {
+                tank.stopTracks();
+                tankState = 'idle';
+              }
+            });
+          };
+          move();
+        }
+      }, 500);
+
+      tank.stopTracks();
+      tankState = 'idle';
+    }
+  };
+
+  app.stage.on('pointerdown', moveTank, undefined);
+
+  app.stage.interactive = true;
+  app.stage.interactiveChildren = false;
+  app.stage.hitArea = new Rectangle(-800, -400, 1600, 800)
+}*/
+// ------------------ GPT
 
 assetsMap.sprites.forEach((value) => app.loader.add(value.name, value.url));
 app.loader.load(runGame);
+
+
+
+
 
 // ------------------------
 /*
